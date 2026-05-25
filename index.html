@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<!--
+GitHub 업로드 구조:
+26jp/
+├── index.html
+└── image/
+    └── menu-example.png
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menu Lens Korea - Prototype with Image</title>
+  <style>
+    :root {
+      --bg: #fff8f1;
+      --card: #ffffff;
+      --text: #252525;
+      --muted: #727272;
+      --line: #eee2d6;
+      --main: #ff7a45;
+      --main-dark: #e85f2a;
+      --soft: #fff0e6;
+      --soft-2: #f7efe7;
+      --green: #3a9b66;
+      --red: #e85b5b;
+      --yellow: #f3b13c;
+      --shadow: 0 18px 45px rgba(80, 43, 20, 0.12);
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255, 205, 160, 0.45), transparent 30%),
+        radial-gradient(circle at 90% 12%, rgba(255, 122, 69, 0.18), transparent 35%),
+        var(--bg);
+    }
+
+    button, input {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+    }
+
+    .app-shell {
+      width: min(430px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #fffaf5 0%, #fff8f1 100%);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(49, 29, 12, 0.1);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px 10px;
+      background: rgba(255, 250, 245, 0.86);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(238, 226, 214, 0.8);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--main), #ffb36c);
+      display: grid;
+      place-items: center;
+      color: white;
+      box-shadow: 0 8px 18px rgba(255, 122, 69, 0.32);
+    }
+
+    .lang-pill {
+      font-size: 12px;
+      color: var(--main-dark);
+      background: var(--soft);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    section {
+      display: none;
+      min-height: calc(100vh - 61px);
+      padding: 22px 18px 96px;
+      animation: fadeIn 0.26s ease-out;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero {
+      padding-top: 36px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--main-dark);
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 34px;
+      line-height: 1.12;
+      margin: 0 0 12px;
+      letter-spacing: -0.06em;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 24px;
+      letter-spacing: -0.04em;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    p {
+      margin: 0;
+      line-height: 1.65;
+    }
+
+    .lead {
+      color: #5d5148;
+      font-size: 16px;
+      margin-bottom: 24px;
+    }
+
+    .hero-visual {
+      margin: 24px 0;
+      padding: 16px;
+      border-radius: 30px;
+      background: linear-gradient(145deg, #fff, #fff1e5);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      position: relative;
+    }
+
+
+    .menu-example-img {
+      width: 100%;
+      max-width: 360px;
+      border-radius: 24px;
+      box-shadow: 0 16px 40px rgba(80, 43, 20, 0.16);
+      border: 1px solid #eee2d6;
+      display: block;
+      margin: 0 auto;
+      object-fit: cover;
+    }
+
+    .menu-scan-card {
+      background: #faf4ec;
+      border: 2px dashed #d9c6b6;
+      border-radius: 22px;
+      padding: 16px;
+      min-height: 210px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scan-line {
+      height: 3px;
+      width: 100%;
+      background: linear-gradient(90deg, transparent, var(--main), transparent);
+      position: absolute;
+      left: 0;
+      top: 40%;
+      animation: scan 2.4s infinite ease-in-out;
+    }
+
+    @keyframes scan {
+      0%, 100% { transform: translateY(-44px); opacity: 0.25; }
+      50% { transform: translateY(64px); opacity: 1; }
+    }
+
+    .fake-menu-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #e6d7c8;
+      font-weight: 700;
+      color: #4b4037;
+    }
+
+    .translation-bubble {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      width: 62%;
+      background: white;
+      border-radius: 18px;
+      padding: 12px;
+      box-shadow: 0 12px 28px rgba(66, 42, 25, 0.12);
+      font-size: 13px;
+    }
+
+    .translation-bubble strong {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--main-dark);
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .ghost-btn {
+      width: 100%;
+      border-radius: 18px;
+      padding: 16px 18px;
+      font-size: 16px;
+      font-weight: 850;
+      transition: 0.18s ease;
+    }
+
+    .primary-btn {
+      color: white;
+      background: linear-gradient(135deg, var(--main), #ff9d5f);
+      box-shadow: 0 14px 28px rgba(255, 122, 69, 0.28);
+    }
+
+    .primary-btn:active,
+    .secondary-btn:active,
+    .ghost-btn:active,
+    .small-btn:active {
+      transform: scale(0.98);
+    }
+
+    .secondary-btn {
+      background: #fff;
+      color: var(--main-dark);
+      border: 1px solid #f0d9c9;
+      margin-top: 10px;
+    }
+
+    .ghost-btn {
+      background: transparent;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .value-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .value-card {
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px 8px;
+      text-align: center;
+      font-size: 12px;
+      color: #5f5147;
+      font-weight: 750;
+    }
+
+    .value-card .icon {
+      font-size: 24px;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .section-head {
+      margin-bottom: 18px;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .camera-box {
+      background: #252525;
+      border-radius: 30px;
+      padding: 18px;
+      aspect-ratio: 3 / 4;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: white;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .camera-grid {
+      position: absolute;
+      inset: 18px;
+      border: 2px solid rgba(255,255,255,0.75);
+      border-radius: 20px;
+      background:
+        linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px);
+      background-size: 33.3% 33.3%;
+    }
+
+    .camera-guide {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      margin-top: 8px;
+      color: rgba(255,255,255,0.88);
+      font-size: 13px;
+    }
+
+    .shutter {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 5px solid white;
+      background: rgba(255,255,255,0.22);
+      align-self: center;
+      position: relative;
+      z-index: 3;
+      margin-bottom: 8px;
+    }
+
+    .tip-box {
+      margin-top: 16px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 14px;
+      color: #62554b;
+      font-size: 14px;
+    }
+
+    .preview-img {
+      border-radius: 26px;
+      background: #fbf0e7;
+      border: 1px solid var(--line);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .preview-paper {
+      background: white;
+      border-radius: 18px;
+      padding: 16px;
+      transform: rotate(-1.2deg);
+      border: 1px solid #eadfd5;
+    }
+
+    .status-list {
+      margin: 26px 0;
+      display: grid;
+      gap: 14px;
+    }
+
+    .status-item {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+    }
+
+    .status-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--soft);
+      display: grid;
+      place-items: center;
+      color: var(--main);
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .spinner {
+      width: 82px;
+      height: 82px;
+      margin: 42px auto 24px;
+      border-radius: 50%;
+      border: 8px solid #ffe2cf;
+      border-top-color: var(--main);
+      animation: spin 0.9s infinite linear;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 0 14px;
+      margin: 0 -18px 4px;
+      padding-left: 18px;
+      scrollbar-width: none;
+    }
+
+    .chips::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      white-space: nowrap;
+      padding: 10px 13px;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid var(--line);
+      font-weight: 800;
+      color: #69584c;
+      font-size: 13px;
+    }
+
+    .chip.active {
+      background: var(--main);
+      color: white;
+      border-color: var(--main);
+    }
+
+    .menu-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .food-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 104px 1fr;
+      gap: 13px;
+      box-shadow: 0 10px 28px rgba(55, 33, 14, 0.07);
+    }
+
+    .food-img {
+      width: 104px;
+      height: 126px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      font-size: 48px;
+      background: linear-gradient(145deg, #fff0de, #ffe4cf);
+      overflow: hidden;
+    }
+
+    .food-info {
+      min-width: 0;
+    }
+
+    .food-info h3 {
+      margin-bottom: 2px;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .ko-name {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .price {
+      font-weight: 900;
+      color: var(--main-dark);
+      margin-bottom: 6px;
+    }
+
+    .desc {
+      font-size: 13px;
+      color: #62554b;
+      line-height: 1.55;
+      margin-bottom: 8px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 800;
+      color: #6b5548;
+      background: var(--soft-2);
+      padding: 5px 7px;
+      border-radius: 999px;
+    }
+
+    .tag.hot {
+      color: #bd3636;
+      background: #ffe8e8;
+    }
+
+    .tag.safe {
+      color: #20784c;
+      background: #e6f7ee;
+    }
+
+    .small-btn {
+      width: 100%;
+      border-radius: 13px;
+      padding: 10px 12px;
+      background: var(--text);
+      color: white;
+      font-weight: 850;
+      font-size: 13px;
+    }
+
+    .detail-hero {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .detail-photo {
+      height: 230px;
+      border-radius: 24px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, #fff0de, #ffe4cf);
+      font-size: 88px;
+      margin-bottom: 16px;
+    }
+
+    .detail-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .spice-meter {
+      display: flex;
+      gap: 3px;
+      color: var(--red);
+      font-size: 18px;
+      margin: 6px 0 14px;
+    }
+
+    .info-panel {
+      margin-top: 14px;
+      background: #fffaf5;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 14px;
+    }
+
+    .info-panel strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .order-card {
+      background: white;
+      border-radius: 28px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+    }
+
+    .phrase {
+      border-bottom: 1px solid var(--line);
+      padding: 18px 0;
+    }
+
+    .phrase:last-child {
+      border-bottom: 0;
+    }
+
+    .phrase-ja {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+
+    .phrase-ko {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .staff-mode {
+      margin-top: 20px;
+      padding: 22px 16px;
+      background: #252525;
+      color: white;
+      border-radius: 24px;
+      text-align: center;
+    }
+
+    .staff-mode .big-ko {
+      font-size: 30px;
+      font-weight: 900;
+      margin: 12px 0 6px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(430px, 100%);
+      z-index: 60;
+      padding: 10px 14px 16px;
+      background: rgba(255, 250, 245, 0.9);
+      border-top: 1px solid rgba(238, 226, 214, 0.8);
+      backdrop-filter: blur(14px);
+      display: none;
+      gap: 8px;
+    }
+
+    .bottom-nav.show {
+      display: flex;
+    }
+
+    .nav-mini {
+      flex: 1;
+      padding: 12px 8px;
+      border-radius: 16px;
+      background: white;
+      color: #6a5a4f;
+      font-size: 12px;
+      font-weight: 850;
+      border: 1px solid var(--line);
+    }
+
+    .nav-mini.active {
+      background: var(--text);
+      color: white;
+    }
+
+    .desktop-note {
+      display: none;
+      width: min(430px, calc(100% - 40px));
+      margin: 16px auto 0;
+      color: #77675b;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .flow-strip {
+      margin: 18px 0 0;
+      padding: 14px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--line);
+    }
+
+    .flow-strip ol {
+      margin: 0;
+      padding-left: 20px;
+      color: #62554b;
+      font-size: 13px;
+      line-height: 1.8;
+      font-weight: 700;
+    }
+
+    @media (min-width: 700px) {
+      body {
+        padding: 24px 0;
+      }
+
+      .app-shell {
+        min-height: calc(100vh - 48px);
+        border-radius: 34px;
+      }
+
+      .desktop-note {
+        display: block;
+      }
+
+      .bottom-nav {
+        border-radius: 24px 24px 0 0;
+      }
+    }
+
+    @media (max-width: 360px) {
+      h1 {
+        font-size: 30px;
+      }
+
+      .food-card {
+        grid-template-columns: 92px 1fr;
+      }
+
+      .food-img {
+        width: 92px;
+        height: 118px;
+      }
+
+      .phrase-ja {
+        font-size: 21px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="desktop-note">発表用プロトタイプ：スマートフォン画面を想定したモバイルWebアプリです。</div>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">🍽️</div>
+        <span>Menu Lens Korea</span>
+      </div>
+      <div class="lang-pill">JP / KR</div>
+    </header>
+
+    <section id="home" class="active hero">
+      <div class="eyebrow">韓国旅行の食事サポート</div>
+      <h1>韓国語メニューを<br>写真つき日本語メニューに。</h1>
+      <p class="lead">
+        韓国の食堂でメニューが読めない時、写真を撮るだけで料理の内容・辛さ・食材・価格がわかります。
+      </p>
+
+      <div class="hero-visual">
+        <img src="./image/menu-example.png" alt="韓国語だけで書かれたメニュー表の例" class="menu-example-img">
+        <div class="translation-bubble">
+          <strong>AI変換例</strong>
+          韓国語メニューを写真つき日本語メニューに変換
+        </div>
+      </div>
+
+      <button class="primary-btn" onclick="showScreen('camera')">メニューを撮影する</button>
+      <button class="secondary-btn" onclick="showScreen('camera')">写真をアップロード</button>
+
+      <div class="value-row">
+        <div class="value-card"><span class="icon">🌶️</span>辛さ表示</div>
+        <div class="value-card"><span class="icon">🥬</span>食材確認</div>
+        <div class="value-card"><span class="icon">💬</span>注文文つき</div>
+      </div>
+
+      <div class="flow-strip">
+        <ol>
+          <li>メニューを撮影</li>
+          <li>AIが日本語に変換</li>
+          <li>写真つきカードで料理を選択</li>
+          <li>注文フレーズを店員に見せる</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="camera">
+      <div class="section-head">
+        <h2>メニューを撮影</h2>
+        <p>メニュー全体が写るように、明るい場所で撮影してください。</p>
+      </div>
+
+      <div class="camera-box">
+        <div class="camera-grid"></div>
+        <div class="camera-guide">メニューを枠の中に入れてください</div>
+        <button class="shutter" aria-label="撮影" onclick="showScreen('preview')"></button>
+      </div>
+
+      <div class="tip-box">
+        文字がぼやけている場合は、もう一度撮影してください。<br>
+        写真アップロードでも利用できます。
+      </div>
+
+      <button class="primary-btn" style="margin-top: 18px;" onclick="showScreen('preview')">デモ写真を使う</button>
+      <button class="ghost-btn" onclick="showScreen('home')">最初の画面に戻る</button>
+    </section>
+
+    <section id="preview">
+      <div class="section-head">
+        <h2>写真を確認</h2>
+        <p>文字が読めることを確認してから変換を開始します。</p>
+      </div>
+
+      <div class="preview-img">
+        <div class="preview-paper">
+          <div class="fake-menu-row"><span>김치찌개</span><span>9,000</span></div>
+          <div class="fake-menu-row"><span>비빔밥</span><span>9,500</span></div>
+          <div class="fake-menu-row"><span>된장찌개</span><span>8,000</span></div>
+          <div class="fake-menu-row"><span>제육볶음</span><span>10,000</span></div>
+          <div class="fake-menu-row"><span>칼국수</span><span>8,500</span></div>
+        </div>
+      </div>
+
+      <button class="primary-btn" style="margin-top: 22px;" onclick="startLoading()">この写真を使う</button>
+      <button class="secondary-btn" onclick="showScreen('camera')">撮り直す</button>
+    </section>
+
+    <section id="loading">
+      <div class="section-head">
+        <h2>メニューを読み取っています</h2>
+        <p>韓国語メニューを日本語の写真つきメニューに変換しています。</p>
+      </div>
+
+      <div class="spinner"></div>
+
+      <div class="status-list">
+        <div class="status-item">
+          <div class="status-dot">1</div>
+          <div>
+            <h3>文字認識</h3>
+            <p class="desc">韓国語のメニュー名と価格を読み取ります。</p>
+          </div>
+        </div>
+        <div class="status-item">
+          <div class="status-dot">2</div>
+          <div>
+            <h3>日本語翻訳</h3>
+            <p class="desc">料理名と説明を自然な日本語に変換します。</p>
+          </div>
+        </div>
+        <div class="status-item">
+          <div class="status-dot">3</div>
+          <div>
+            <h3>写真メニュー生成</h3>
+            <p class="desc">料理写真・辛さ・食材タグを表示します。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="result">
+      <div class="section-head">
+        <h2>写真つき日本語メニュー</h2>
+        <p>気になる料理を選ぶと、詳しい説明と注文フレーズを確認できます。</p>
+      </div>
+
+      <div class="chips">
+        <button class="chip active">おすすめ</button>
+        <button class="chip">辛くない</button>
+        <button class="chip">辛い</button>
+        <button class="chip">肉</button>
+        <button class="chip">魚</button>
+        <button class="chip">野菜</button>
+        <button class="chip">ご飯もの</button>
+        <button class="chip">麺</button>
+        <button class="chip">スープ・チゲ</button>
+      </div>
+
+      <div class="menu-list">
+        <article class="food-card">
+          <div class="food-img">🍲</div>
+          <div class="food-info">
+            <h3>キムチチゲ</h3>
+            <div class="ko-name">김치찌개</div>
+            <div class="price">₩9,000</div>
+            <p class="desc">辛いキムチと豚肉を煮込んだ韓国の定番チゲです。</p>
+            <div class="tag-row">
+              <span class="tag hot">辛い</span>
+              <span class="tag">温かい</span>
+              <span class="tag">豚肉あり</span>
+            </div>
+            <button class="small-btn" onclick="openDetail('kimchi')">詳しく見る</button>
+          </div>
+        </article>
+
+        <article class="food-card">
+          <div class="food-img">🥗</div>
+          <div class="food-info">
+            <h3>ビビンバ</h3>
+            <div class="ko-name">비빔밥</div>
+            <div class="price">₩9,500</div>
+            <p class="desc">ご飯に野菜や肉をのせ、コチュジャンと混ぜて食べる料理です。</p>
+            <div class="tag-row">
+              <span class="tag">ご飯もの</span>
+              <span class="tag">野菜</span>
+              <span class="tag hot">少し辛い</span>
+            </div>
+            <button class="small-btn" onclick="openDetail('bibim')">詳しく見る</button>
+          </div>
+        </article>
+
+        <article class="food-card">
+          <div class="food-img">🥘</div>
+          <div class="food-info">
+            <h3>テンジャンチゲ</h3>
+            <div class="ko-name">된장찌개</div>
+            <div class="price">₩8,000</div>
+            <p class="desc">韓国の味噌を使った、温かくて食べやすいスープ料理です。</p>
+            <div class="tag-row">
+              <span class="tag safe">辛くない</span>
+              <span class="tag">スープ</span>
+              <span class="tag">豆腐</span>
+            </div>
+            <button class="small-btn" onclick="openDetail('doenjang')">詳しく見る</button>
+          </div>
+        </article>
+
+        <article class="food-card">
+          <div class="food-img">🍖</div>
+          <div class="food-info">
+            <h3>チェユクポックム</h3>
+            <div class="ko-name">제육볶음</div>
+            <div class="price">₩10,000</div>
+            <p class="desc">豚肉を辛いタレで炒めた、ご飯によく合う韓国料理です。</p>
+            <div class="tag-row">
+              <span class="tag hot">辛い</span>
+              <span class="tag">豚肉あり</span>
+              <span class="tag">ご飯と合う</span>
+            </div>
+            <button class="small-btn" onclick="openDetail('jeyuk')">詳しく見る</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="detail">
+      <div class="detail-hero">
+        <div class="detail-photo" id="detailEmoji">🍲</div>
+        <div class="detail-meta">
+          <div>
+            <h2 id="detailName">キムチチゲ</h2>
+            <p class="ko-name" id="detailKo">김치찌개</p>
+          </div>
+          <div class="price" id="detailPrice">₩9,000</div>
+        </div>
+
+        <p id="detailDesc">
+          辛いキムチと豚肉を煮込んだ韓国の定番チゲです。ご飯と一緒に食べることが多い料理です。
+        </p>
+
+        <div class="info-panel">
+          <strong>辛さ</strong>
+          <div class="spice-meter" id="detailSpice">★★★★☆</div>
+        </div>
+
+        <div class="info-panel">
+          <strong>主な食材</strong>
+          <div class="tag-row" id="detailTags">
+            <span class="tag">キムチ</span><span class="tag">豚肉</span><span class="tag">豆腐</span><span class="tag">ネギ</span>
+          </div>
+        </div>
+
+        <div class="info-panel">
+          <strong>注意</strong>
+          <p class="desc" id="detailWarning">豚肉が入っています。辛い料理です。</p>
+        </div>
+      </div>
+
+      <button class="primary-btn" style="margin-top: 20px;" onclick="showScreen('order')">注文フレーズを見る</button>
+      <button class="secondary-btn" onclick="showScreen('result')">メニュー一覧に戻る</button>
+    </section>
+
+    <section id="order">
+      <div class="section-head">
+        <h2>注文フレーズ</h2>
+        <p>店員にそのまま見せることができます。</p>
+      </div>
+
+      <div class="order-card">
+        <div class="phrase">
+          <div class="phrase-ja">これを一つください。</div>
+          <div class="phrase-ko">이거 하나 주세요.</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-ja">辛くしないでください。</div>
+          <div class="phrase-ko">맵지 않게 해 주세요.</div>
+        </div>
+        <div class="phrase">
+          <div class="phrase-ja">豚肉を抜くことはできますか？</div>
+          <div class="phrase-ko">돼지고기를 빼주실 수 있나요?</div>
+        </div>
+      </div>
+
+      <div class="staff-mode">
+        店員さんに見せる画面
+        <div class="big-ko">이거 하나 주세요</div>
+        <p>選択したメニューを注文します。</p>
+      </div>
+
+      <button class="secondary-btn" onclick="showScreen('result')">他のメニューを見る</button>
+      <button class="ghost-btn" onclick="showScreen('home')">最初からやり直す</button>
+    </section>
+
+    <nav class="bottom-nav" id="bottomNav">
+      <button class="nav-mini" onclick="showScreen('home')">ホーム</button>
+      <button class="nav-mini" onclick="showScreen('camera')">撮影</button>
+      <button class="nav-mini" onclick="showScreen('result')">結果</button>
+      <button class="nav-mini" onclick="showScreen('order')">注文</button>
+    </nav>
+  </main>
+
+  <script>
+    const screens = ["home", "camera", "preview", "loading", "result", "detail", "order"];
+
+    const menuData = {
+      kimchi: {
+        emoji: "🍲",
+        name: "キムチチゲ",
+        ko: "김치찌개",
+        price: "₩9,000",
+        desc: "辛いキムチと豚肉を煮込んだ韓国の定番チゲです。ご飯と一緒に食べることが多い料理です。",
+        spice: "★★★★☆",
+        tags: ["キムチ", "豚肉", "豆腐", "ネギ"],
+        warning: "豚肉が入っています。辛い料理です。"
+      },
+      bibim: {
+        emoji: "🥗",
+        name: "ビビンバ",
+        ko: "비빔밥",
+        price: "₩9,500",
+        desc: "ご飯の上に野菜や肉をのせ、コチュジャンと混ぜて食べる韓国料理です。辛さは調整できます。",
+        spice: "★★☆☆☆",
+        tags: ["ご飯", "野菜", "卵", "牛肉"],
+        warning: "コチュジャンを少なめにすると辛さを抑えられます。"
+      },
+      doenjang: {
+        emoji: "🥘",
+        name: "テンジャンチゲ",
+        ko: "된장찌개",
+        price: "₩8,000",
+        desc: "韓国の味噌を使った温かいスープ料理です。辛さが少なく、日本人にも食べやすい味です。",
+        spice: "★☆☆☆☆",
+        tags: ["韓国味噌", "豆腐", "野菜", "スープ"],
+        warning: "海鮮だしが使われる場合があります。"
+      },
+      jeyuk: {
+        emoji: "🍖",
+        name: "チェユクポックム",
+        ko: "제육볶음",
+        price: "₩10,000",
+        desc: "豚肉を辛いタレで炒めた韓国料理です。濃い味で、ご飯と一緒に食べるのがおすすめです。",
+        spice: "★★★★☆",
+        tags: ["豚肉", "辛いタレ", "玉ねぎ", "ご飯と合う"],
+        warning: "豚肉が入っています。辛さが強い場合があります。"
+      }
+    };
+
+    function showScreen(id) {
+      screens.forEach(screenId => {
+        document.getElementById(screenId).classList.toggle("active", screenId === id);
+      });
+
+      const nav = document.getElementById("bottomNav");
+      nav.classList.toggle("show", id !== "home" && id !== "loading");
+
+      document.querySelectorAll(".nav-mini").forEach(btn => btn.classList.remove("active"));
+      const navMap = { home: 0, camera: 1, preview: 1, result: 2, detail: 2, order: 3 };
+      if (navMap[id] !== undefined && nav.children[navMap[id]]) {
+        nav.children[navMap[id]].classList.add("active");
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function startLoading() {
+      showScreen("loading");
+      setTimeout(() => {
+        showScreen("result");
+      }, 1800);
+    }
+
+    function openDetail(key) {
+      const data = menuData[key];
+      document.getElementById("detailEmoji").textContent = data.emoji;
+      document.getElementById("detailName").textContent = data.name;
+      document.getElementById("detailKo").textContent = data.ko;
+      document.getElementById("detailPrice").textContent = data.price;
+      document.getElementById("detailDesc").textContent = data.desc;
+      document.getElementById("detailSpice").textContent = data.spice;
+      document.getElementById("detailWarning").textContent = data.warning;
+
+      const tags = data.tags.map(tag => `<span class="tag">${tag}</span>`).join("");
+      document.getElementById("detailTags").innerHTML = tags;
+
+      showScreen("detail");
+    }
+
+    document.querySelectorAll(".chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+        chip.classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>
